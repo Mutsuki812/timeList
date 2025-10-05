@@ -15,9 +15,9 @@ document.getElementById("langBtn").addEventListener("click", () => {
 function updateLangText() {
   const langText = document.getElementById("langText");
   if (lang === "zh") {
-    langText.innerHTML = "・時間為系統出字提示的時間。<br>・儀式：系統提示後、等待10分鐘出怪。<br>・水月/白青野王：系統提示「」後、等待5分鐘出王。";
+    langText.innerHTML = "・時間為系統出字提示的時間。<br>・儀式：系統提示後、等待10分鐘出怪。<br>・水月/白青野王：系統提示後、等待5分鐘出王。";
   } else {
-    langText.innerHTML = "・時間は予兆が出る時間。<br>・怪しい儀式：システムが「」提示後、10分ほど、ボスが出ます。<br>・水月/白青FB：システムが「」提示後、5分ほど、ボスが出ます。";
+    langText.innerHTML = "・時間は予兆が出る時間。<br>・怪しい儀式：システムが予兆提示後、10分ほど、ボスが出ます。<br>・水月/白青FB：システムが予兆提示後、5分ほど、ボスが出ます。";
   }
 }
 
