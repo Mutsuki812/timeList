@@ -1,5 +1,8 @@
-const EXCEL_URL = "https://github.com/Mutsuki812/timeList/main/files/timeList.xlsx";
+const EXCEL_URL = "files/timeList.xlsx";
 let lang = "zh"; // early language
+
+const WEEKDAY_ZH = ["日", "一", "二", "三", "四", "五", "六"];
+const WEEKDAY_JP = ["日", "月", "火", "水", "木", "金", "土"];
 
 // language btn
 document.getElementById("langBtn").addEventListener("click", () => {
@@ -12,20 +15,19 @@ document.getElementById("langBtn").addEventListener("click", () => {
 function updateLangText() {
   const langText = document.getElementById("langText");
   if (lang === "zh") {
-    langText.textContent = "・時間為系統出字提示的時間。"<br>"・儀式：系統提示後、等待10分鐘出怪。"<br>"・水月/白青野王：系統提示「」後、等待5分鐘出王。";
+    langText.innerHTML = "・時間為系統出字提示的時間。/n・儀式：系統提示後、等待10分鐘出怪。<br>・水月/白青野王：系統提示「」後、等待5分鐘出王。";
   } else {
-    langText.textContent = "・時間は予兆が出る時間。"<br>"・怪しい儀式：システムが「」提示後、10分ほど、ボスが出ます。"<br>"・水月/白青FB：システムが「」提示後、5分ほど、ボスが出ます。";
+    langText.innerHTML = "・時間は予兆が出る時間。<br>・怪しい儀式：システムが「」提示後、10分ほど、ボスが出ます。<br>・水月/白青FB：システムが「」提示後、5分ほど、ボスが出ます。";
   }
 }
 
 function getTodayLabel() {
   const now = new Date();
-  const weekdayZh = ["日", "一", "二", "三", "四", "五", "六"];
-  const weekdayJp = ["日", "月", "火", "水", "木", "金", "土"];
-  const label = lang === "zh" ? weekdayZh[now.getDay()] : weekdayJp[now.getDay()];
+  const label = lang === "zh" ? WEEKDAY_ZH[now.getDay()] : WEEKDAY_JP[now.getDay()];
   document.getElementById("today").textContent =
     `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} （${label}）`;
 }
+
 
 async function loadTasks() {
   getTodayLabel();
@@ -36,10 +38,9 @@ async function loadTasks() {
     const sheet = workbook.Sheets["timeList"];
     const data = XLSX.utils.sheet_to_json(sheet);
 
-    const now = new Date();
     const currentHour = now.getHours().toString().padStart(2, "0");
-    const currentWeekZh = ["日","一","二","三","四","五","六"][now.getDay()];
-    const currentWeekJp = ["日","月","火","水","木","金","土"][now.getDay()];
+    const currentWeekZh = WEEKDAY_ZH[now.getDay()];
+    const currentWeekJp = WEEKDAY_JP[now.getDay()];
 
     // week
     const rows = data.filter(row =>
@@ -75,7 +76,7 @@ async function loadTasks() {
     });
 
   } catch (err) {
-    console.error(err);
+      `<tr><td colspan="3">${lang === "zh" ? "讀取失敗" : "読み込み失敗"}</td></tr>`;
     document.getElementById("taskBody").innerHTML =
       `<tr><td colspan="3">讀取失敗</td></tr>`;
   }
