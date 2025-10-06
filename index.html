@@ -1,22 +1,56 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
   <meta charset="UTF-8">
-  <title>B&S時間表</title>
+  <title>B&S NEO時間表</title>
   <link rel="stylesheet" href="./style/style.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
+
 <body>
   <div class="header">
     <p id="today"></p>
-    <button id="langBtn">日本語に切り替え</button>
+    <p id="currentTime"></p>
+    <button id="langBtn">日本サーバーに切り替え</button>
   </div>
+
+  <p id="langText"></p>
+
   <table>
     <tbody id="taskBody">
-      <tr><td colspan="3">讀取中...</td></tr>
+      <tr>
+        <td colspan="3">讀取中...</td>
+      </tr>
     </tbody>
   </table>
-  <p id="langText"></p>
+
+  <p id="report-box">
+    <label>
+      <select id="reportTaskType">
+        <option value="ishiki">儀式</option>
+        <option value="mitsuki">水月</option>
+        <option value="shirao">白青</option>
+        <option value="other">其他</option>
+      </select>
+    </label>
+
+    <label>
+      <select id="reportType">
+        <option value="date_report">提供數據 / 數據修正</option>
+        <option value="other">其他</option>
+      </select>
+    </label>
+
+    <label>
+      <input type="text" id="reportComment" placeholder="10/6 17:35 地點① 地點②">
+    </label>
+
+    <button id="submitReport">送出回報</button>
+  <p id="reportMsg" style="color:green;"></p>
+  </p>
+
   <script src="./script/main.js"></script>
 </body>
+
 </html>
