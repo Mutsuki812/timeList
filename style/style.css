@@ -318,9 +318,12 @@ body {
 }
 
 /* 狀態顏色 */
-.gray,
 .row-gray {
-  color: #8b8b8b;
+  color: #4a4a4a;
+}
+
+.gray {
+  color: #aaaaaa !important;
 }
 
 /* ---------- 可收合區塊 (剩餘任務) ---------- */
@@ -415,7 +418,7 @@ body {
 
 /* 右對齊按鈕容器 */
 #reportDel {
-  text-align: right;
+  text-align: left;
 }
 
 /* clearReports 按鈕樣式 (隱藏式設計) */
@@ -518,10 +521,10 @@ body {
     line-height: 1.4;
   }
 
-  /* 群組之間略留距離 */
+  /* 群組之間略留距離
   .group + .group {
-    /* margin-top: 6px; */
-  }
+    margin-top: 6px;
+  } */
 
   /* 按鈕調整為易點擊尺寸 */
   .showBtn {

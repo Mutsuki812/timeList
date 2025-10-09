@@ -1,5 +1,5 @@
 /* ==========================
-   ====== 設定 & 資料 ======
+   ===== 設定 & 資料 ======
    ========================== */
 const EXCEL_URL = "./files/timeList.xlsx";
 const SHEET_NAME = "timeList";
@@ -30,7 +30,7 @@ const REPORT_TYPES = {
 const REPORT_STORAGE_KEY = "myReports";
 
 /* ==========================
-   ====== 語系判定 & 切換 ======
+   ===== 語系判定 & 切換 =====
    ========================== */
 let lang = "zh";
 
@@ -44,6 +44,7 @@ document.getElementById("langBtn").addEventListener("click", () => {
   lang = lang === "zh" ? "jp" : "zh";
   document.getElementById("langBtn").textContent = lang === "zh" ? "日本鯖切替" : "切換到台服";
 
+  // 更新所有與語言相關的 UI
   updateTopTime();
   loadTasksAndRender();
   updateLangText();
@@ -55,7 +56,7 @@ document.getElementById("langBtn").addEventListener("click", () => {
 detectLangByTimezone();
 
 /* ==========================
-   ====== 時間處理函數 ======
+   ===== 時間處理函數 ======
    ========================== */
 function getNowBySVR() {
   const now = new Date();
@@ -68,8 +69,8 @@ function formatDateLabel(d) {
   const yrs = d.getFullYear();
   const m = d.getMonth() + 1;
   const day = d.getDate();
-  const wdZh = ["日","一","二","三","四","五","六"];
-  const wdJp = ["日","月","火","水","木","金","土"];
+  const wdZh = ["日", "一", "二", "三", "四", "五", "六"];
+  const wdJp = ["日", "月", "火", "水", "木", "金", "土"];
   const w = lang === "zh" ? wdZh[d.getDay()] : wdJp[d.getDay()];
   return `${yrs}/${m}/${day}（${w}）`;
 }
@@ -100,45 +101,31 @@ function timeStringToDateToday(timeStr) {
 
 function shouldShowRemaining() {
   const h = getNowBySVR().getHours();
-  return !(h >= 21);
+  return h < 21;
 }
 
-
-// 語言說明文字
+/* 語言說明文字 */
 function updateLangText() {
-  // 取得或建立 langText 區塊
   let langText = document.querySelector(".langText");
   if (!langText) {
     langText = document.createElement("div");
     langText.className = "langText";
     document.body.appendChild(langText);
   }
-  if (lang === "zh") {
-    langText.innerHTML =
-      "・時間為系統出字提示的時間。<br>" +
-      "・儀式：出字提示後、等待10分鐘出怪。<br>" +
-      "・野王：出字提示後、等待  5分鐘出王。";
-  } else {
-    langText.innerHTML =
-      "・表の時間＝予兆が出る時間<br>" +
-      "・怪しい儀式 ：予兆後、約10分でボス出現<br>" +
-      "・水月/白青FB：予兆後、約 5分でボス出現";
-  }
+  langText.innerHTML = lang === "zh"
+    ? "・時間為系統出字提示的時間。<br>・儀式：出字提示後、等待10分鐘出怪。<br>・野王：出字提示後、等待  5分鐘出王。"
+    : "・表の時間＝予兆が出る時間<br>・怪しい儀式 ：予兆後、約10分でボス出現<br>・水月/白青FB：予兆後、約 5分でボス出現";
 }
 
-
-
-
-
 /* ==========================
-   ====== Excel 讀取 ======
+   ===== Excel 讀取 ======
    ========================== */
 async function loadExcel() {
   try {
     const res = await fetch(EXCEL_URL);
     const buf = await res.arrayBuffer();
     const workbook = XLSX.read(buf, { type: "array" });
-    let sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
+    const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
     return XLSX.utils.sheet_to_json(sheet);
   } catch (err) {
     console.error("Excel 讀取失敗：", err);
@@ -147,7 +134,7 @@ async function loadExcel() {
 }
 
 /* ==========================
-   ====== 任務列表 ======
+   ===== 任務列表 ======
    ========================== */
 async function loadTasksAndRender() {
   const rows = await loadExcel();
@@ -160,25 +147,25 @@ function renderAllGroups(rows) {
 
   const now = getNowBySVR();
   const currentHour = now.getHours();
-  const currentWeekZh = ["日","一","二","三","四","五","六"][now.getDay()];
-  const currentWeekJp = ["日","月","火","水","木","金","土"][now.getDay()];
+  const currentWeekZh = ["日", "一", "二", "三", "四", "五", "六"][now.getDay()];
+  const currentWeekJp = ["日", "月", "火", "水", "木", "金", "土"][now.getDay()];
 
   TASK_TYPES.forEach(type => {
     const list = rows
       .filter(r => (r["Week-zh"] === currentWeekZh || r["Week-jp"] === currentWeekJp) && r[`${type.key}-time`])
-      .map(r => ({ 
-        time: r[`${type.key}-time`], 
-        zh: r[`${type.key}-zh`] || "", 
-        jp: r[`${type.key}-jp`] || "" 
+      .map(r => ({
+        time: r[`${type.key}-time`],
+        zh: r[`${type.key}-zh`] || "",
+        jp: r[`${type.key}-jp`] || ""
       }))
-      .sort((a,b) => {
-        const ha = parseInt(a.time.split(":")[0]) * 60 + parseInt(a.time.split(":")[1]||0);
-        const hb = parseInt(b.time.split(":")[0]) * 60 + parseInt(b.time.split(":")[1]||0);
+      .sort((a, b) => {
+        const ha = parseInt(a.time.split(":")[0]) * 60 + parseInt(a.time.split(":")[1] || 0);
+        const hb = parseInt(b.time.split(":")[0]) * 60 + parseInt(b.time.split(":")[1] || 0);
         return ha - hb;
       });
 
     const currentItem = list.find(item => parseInt(item.time.split(":")[0]) === currentHour) || null;
-    const nextItems = list.filter(item => {
+    let nextItems = list.filter(item => {
       const h = parseInt(item.time.split(":")[0]);
       return h === currentHour + 1 || h === currentHour + 2;
     });
@@ -187,11 +174,11 @@ function renderAllGroups(rows) {
     const group = document.createElement("div");
     group.className = `group ${type.key}`;
 
-    // --- 當前任務 ---
+    // 當前任務
     const curRow = document.createElement("div");
     curRow.className = `taskRow ${type.key} current`;
     const curTimeText = currentItem?.time || "--:--";
-    const curContent = currentItem ? (lang==="zh"?currentItem.zh:currentItem.jp) : "-------";
+    const curContent = currentItem ? (lang === "zh" ? currentItem.zh : currentItem.jp) : "-------";
     curRow.innerHTML = `
       <div class="col-type">${lang === "zh" ? type.labelZh : type.labelJp}</div>
       <div class="col-time">${curTimeText}</div>
@@ -209,24 +196,36 @@ function renderAllGroups(rows) {
 
     group.appendChild(curRow);
 
-    // --- 當前任務以外的任務整體 ---
+    // 其他任務區
     const wrapper = document.createElement("div");
     wrapper.className = "taskWrapper";
 
-    // --- 接下來兩小時 ---
-    if (nextItems.length > 0) {
+    // 計算接下來兩個時間點任務，會跨天
+    nextItems = [];
+    const nextHours = [currentHour + 1, currentHour + 2].map(h => h % 24);
+
+    nextHours.forEach(h => {
+      list.forEach(item => {
+        const itemHour = parseInt(item.time.split(":")[0]);
+        // 判斷是否跨天
+        if ((h < 24 && itemHour === h) || (h >= 24 && itemHour === h - 24)) {
+          nextItems.push(item);
+        }
+      });
+    });
+
+    if (nextItems.length) {
       const nextRow = document.createElement("div");
       nextRow.className = "taskRow";
       nextRow.innerHTML = `
-        <div class="placeholder"></div>
-        <div class="col-time">${nextItems.map(n => n.time).join("<br>")}</div>
-        <div class="col-content">${nextItems.map(n => (lang==="zh"?n.zh:n.jp)).join("<br>")}</div>
-      `;
+                <div class="placeholder"></div>
+                <div class="col-time">${nextItems.map(n => n.time).join("<br>")}</div>
+                <div class="col-content">${nextItems.map(n => (lang === "zh" ? n.zh : n.jp)).join("<br>")}</div>
+    `;
       nextRow.querySelectorAll(".col-time, .col-content").forEach(el => el.classList.add("row-gray"));
       wrapper.appendChild(nextRow);
     }
 
-    // --- 剩餘任務 ---
     const remWrapper = document.createElement("div");
     remWrapper.className = "remainingContainer";
     remainingItems.forEach(r => {
@@ -242,50 +241,37 @@ function renderAllGroups(rows) {
     });
     wrapper.appendChild(remWrapper);
 
-    // --- 其他按鈕 ---
+    // 展開按鈕
     const footer = document.createElement("div");
     footer.className = "groupFooter";
     const btn = document.createElement("button");
     btn.className = "showBtn";
     btn.textContent = lang === "zh" ? "其他時間 ▼" : "その他 ▼";
+    if (now.getHours() >= 21) btn.style.display = "none";
+
+    btn.addEventListener("click", () => {
+      if (!shouldShowRemaining()) return;
+      const isOpen = remWrapper.classList.contains("open");
+
+      // 關閉其他展開的容器
+      document.querySelectorAll(".remainingContainer.open").forEach(el => el.classList.remove("open"));
+      document.querySelectorAll(".groupFooter .showBtn").forEach(b =>
+        b.textContent = lang === "zh" ? "其他時間 ▼" : "その他 ▼"
+      );
+
+      if (!isOpen && remainingItems.length > 0) {
+        remWrapper.classList.add("open");
+        btn.textContent = lang === "zh" ? "關閉 ▲" : "閉じる ▲";
+      } else {
+        remWrapper.classList.remove("open");
+        btn.textContent = lang === "zh" ? "其他時間 ▼" : "その他 ▼";
+      }
+    });
 
     footer.appendChild(btn);
-
     wrapper.appendChild(footer);
-
     group.appendChild(wrapper);
-
-    // 21:00 之後隱藏按鈕
-    const nowHour = getNowBySVR().getHours();
-    if (nowHour >= 21) {
-      btn.style.display = "none";
-    }
-
-// --- 按鈕點擊事件 ---
-btn.addEventListener("click", () => {
-  if (!shouldShowRemaining()) return; // 晚上21:00後不動作
-  const isOpen = remWrapper.classList.contains("open");
-
-  // 關閉其他展開的容器
-  document.querySelectorAll(".remainingContainer.open").forEach(el =>
-    el.classList.remove("open")
-  );
-  document.querySelectorAll(".groupFooter .showBtn").forEach(b =>
-    b.textContent = lang === "zh" ? "其他時間 ▼" : "その他 ▼"
-  );
-
-  // 切換顯示狀態
-  if (!isOpen && remainingItems.length > 0) {
-    remWrapper.classList.add("open");
-    btn.textContent = lang === "zh" ? "關閉 ▲" : "閉じる ▲";
-  } else {
-    remWrapper.classList.remove("open");
-    btn.textContent = lang === "zh" ? "其他時間 ▼" : "その他 ▼";
-  }
-});
-
-container.appendChild(group);
-    
+    container.appendChild(group);
   });
 }
 
@@ -304,18 +290,15 @@ loadTasksAndRender();
 scheduleHourlyReload();
 
 /* ==========================
-   ====== 回報區域操作 ======
+   ===== 回報區域操作 ======
    ========================== */
 const reportTaskTypeEl = document.getElementById("reportTaskType");
 const reportTypeEl = document.getElementById("reportType");
 const reportCommentEl = document.getElementById("reportComment");
-
 const msgEl = document.getElementById("reportMessage");
 const submitReportBtn = document.getElementById("submitReport");
-
 const reportListEl = document.getElementById("reportList");
 const clearReportsBtn = document.getElementById("clearReports");
-
 
 function getTaskTypeLabelSingle(key) {
   const task = REPORTTASK_TYPES.find(t => t.key === key);
@@ -323,10 +306,10 @@ function getTaskTypeLabelSingle(key) {
 }
 
 function getReportTypeLabelSingle(value, taskKey) {
-  const types = ["gishiki","mizuki","shirao"].includes(taskKey)
+  const types = ["gishiki", "mizuki", "shirao"].includes(taskKey)
     ? REPORT_TYPES.default
     : REPORT_TYPES.otherOnly;
-  const type = types.find(t => t.value === value) || {labelZh:value,labelJp:value};
+  const type = types.find(t => t.value === value) || { labelZh: value, labelJp: value };
   return lang === "zh" ? type.labelZh : type.labelJp;
 }
 
@@ -342,7 +325,7 @@ function updateReportTaskOptions() {
 
 function updateReportTypeOptions() {
   const selectedTask = reportTaskTypeEl.value;
-  const optionsToUse = ["gishiki","mizuki","shirao"].includes(selectedTask)
+  const optionsToUse = ["gishiki", "mizuki", "shirao"].includes(selectedTask)
     ? REPORT_TYPES.default
     : REPORT_TYPES.otherOnly;
   reportTypeEl.innerHTML = "";
@@ -359,7 +342,6 @@ function updateReportCommentPlaceholder() {
   submitReportBtn.textContent = lang === "zh" ? "送出" : "送信";
 }
 
-// 提醒顯示
 function showMsg(text, color = "green", duration = 3000) {
   msgEl.textContent = text;
   msgEl.style.color = color;
@@ -367,7 +349,6 @@ function showMsg(text, color = "green", duration = 3000) {
   setTimeout(() => { msgEl.textContent = ""; }, duration);
 }
 
-// ====== 建立單筆報告 DIV ======
 function createReportDiv(report, isLatest = false) {
   const div = document.createElement("div");
   div.textContent = `[${report.time}] ${getTaskTypeLabelSingle(report.taskType)} ${getReportTypeLabelSingle(report.reportType, report.taskType)}⇒${report.comment}`;
@@ -377,20 +358,14 @@ function createReportDiv(report, isLatest = false) {
   return div;
 }
 
-// ====== 顯示所有報告 ======
 function renderReports() {
   const reports = JSON.parse(localStorage.getItem(REPORT_STORAGE_KEY)) || [];
   reportListEl.innerHTML = "";
-
   reports.sort((a, b) => new Date(b.time) - new Date(a.time));
-
-  reports.forEach((r, index) => {
-    const div = createReportDiv(r, index === 0);
-    reportListEl.appendChild(div);
-  });
+  reports.forEach((r, index) => reportListEl.appendChild(createReportDiv(r, index === 0)));
 }
 
-// ====== 事件綁定 ======
+/* ====== 事件綁定 ====== */
 reportTaskTypeEl.addEventListener("change", updateReportTypeOptions);
 
 submitReportBtn.addEventListener("click", () => {
@@ -405,12 +380,11 @@ submitReportBtn.addEventListener("click", () => {
 
   const time = new Date().toLocaleString();
   const newReport = { time, taskType, reportType, comment };
-
   const reports = JSON.parse(localStorage.getItem(REPORT_STORAGE_KEY)) || [];
   reports.push(newReport);
   localStorage.setItem(REPORT_STORAGE_KEY, JSON.stringify(reports));
 
-  renderReports();   // 直接刷新畫面，不再重複操作 DOM
+  renderReports();
   showMsg(lang === "zh" ? "回報內容已送出" : "送信完了", "green");
   reportCommentEl.value = "";
 });
@@ -419,7 +393,6 @@ clearReportsBtn.addEventListener("click", () => {
   localStorage.removeItem(REPORT_STORAGE_KEY);
   reportListEl.innerHTML = "";
 });
-
 
 /* ===== 初始化 ===== */
 updateReportTaskOptions();
