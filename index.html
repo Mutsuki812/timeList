@@ -2,53 +2,68 @@
 <html lang="zh">
 
 <head>
-  <meta charset="UTF-8">
-  <title>B&S NEO時間表</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>B&S NEO 時間表</title>
+
   <link rel="stylesheet" href="./style/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
-  <div class="header">
-    <p id="today"></p>
-    <p id="currentTime"></p>
-    <button id="langBtn">日本サーバーに切り替え</button>
+  <div id="app">
+    <!-- 上方：日期與時間（整體靠左） -->
+    <header id="topBar">
+      <div id="topLeft">
+        <div id="dateLabel" class="dateLabel"></div>
+        <div id="timeBox" class="timeBox"></div>
+      </div>
+      <!-- 切換按鈕：放入中段右上（但放在 DOM 頂端方便樣式定位） -->
+      <div id="topRight">
+        <button id="langBtn" class="langBtn"></button>
+      </div>
+    </header>
+    <div class="langText"></div>
+
+    <!-- 中段：主卡片（統一灰底主容器） -->
+    <section id="mainCard" class="mainCard ">
+      <div id="taskContainer" class="taskContainer m-plus-1p-regular"></div>
+    </section>
+
+    <!-- 下方：回報區（UI 仍有，但留言/刪除文字與底色同色＝不可見給一般使用者） -->
+    <section id="reportSection" class="reportSection">
+      <div class="reportForm">
+        <select id="reportTaskType">
+          <option value="gishiki">可疑的儀式</option>
+          <option value="mizuki">水月野王</option>
+          <option value="shirao">白青野王</option>
+          <option value="other">其他</option>
+        </select>
+
+        <select id="reportType">
+          <option value="date_report">時間回報</option>
+          <option value="other">其他</option>
+        </select>
+        <input type="text" id="reportComment" placeholder="10/08 19:26 地點 地點" />
+
+        <div class="reportContainer">
+          <div id="reportMessage"></div>
+          <div class="reportButtons">
+            <button id="submitReport"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 回報紀錄：顯示在頁面最下方，但文字顏色與背景相同（不可見）-->
+      <p class="reportLog">
+      <div id="reportList" class="reportList"></div>
+      <div id="reportDel">
+        <button id="clearReports">刪除</button>
+      </div>
+      </p>
+    </section>
   </div>
-
-  <p id="langText"></p>
-
-  <table>
-    <tbody id="taskBody">
-      <tr>
-        <td colspan="3">讀取中...</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p id="report-box">
-    <label>
-      <select id="reportTaskType">
-        <option value="ishiki">儀式</option>
-        <option value="mitsuki">水月</option>
-        <option value="shirao">白青</option>
-        <option value="other">其他</option>
-      </select>
-    </label>
-
-    <label>
-      <select id="reportType">
-        <option value="date_report">提供數據 / 數據修正</option>
-        <option value="other">其他</option>
-      </select>
-    </label>
-
-    <label>
-      <input type="text" id="reportComment" placeholder="10/6 17:35 地點① 地點②">
-    </label>
-
-    <button id="submitReport">送出回報</button>
-  <p id="reportMsg" style="color:green;"></p>
-  </p>
 
   <script src="./script/main.js"></script>
 </body>

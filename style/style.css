@@ -1,38 +1,537 @@
+/* ====================================================================
+    基本設定與共通樣式
+==================================================================== */
+
+/* 不要讓元素超出 container (優先設定) */
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  font-family: "Noto Sans TC", "Meiryo", sans-serif;
-  padding: 20px;
-  background: #fafafa;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto; /* 保留捲軸 */
+  /* 視覺樣式 */
+  background: #f3efea; /* 主背景：柔黃米灰 */
+  color: #777; /* 主要文字色：非純黑，柔和深灰 */
+  /* 字體設定 */
+  font-family: "Noto Sans JP", "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
-h1 {
-  text-align: center;
+
+/* 額外字體：M PLUS 1p (若有引入) */
+.m-plus-1p-regular {
+  font-family: "M PLUS 1p", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
-.header {
+
+/* App 最大寬度置中容器 */
+#app {
+  /* 佈局 */
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  max-width: 600px;
+  /* 間距 */
+  margin: 10px auto;
+  padding: 12px;
+}
+
+/* ====================================================================
+    上方區塊：日期、時間、按鈕 (#topBar)
+==================================================================== */
+
+#topBar {
+  /* 佈局 */
+  display: flex;
+  justify-content: space-between; /* 左右區塊水平對齊 */
+  align-items: flex-start; /* 對齊上緣 */
+  /* 間距 */
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* 左側：日期 + 時間 容器 */
+#topLeft {
+  /* 佈局 */
+  display: flex;
+  flex-direction: column; /* 日期在上、時間在下 */
+  align-items: flex-start; /* 整體靠左 */
+  justify-content: center;
+  /* 尺寸 */
+  width: 280px; /* ✅ 一般畫面固定寬度 */
+  /* 間距 */
+  gap: 6px;
+}
+
+/* 日期與時間共通樣式 */
+#dateLabel,
+#timeBox {
+  display: flex;
+  width: 100%; /* 與 #topLeft 同寬 */
+  box-sizing: border-box;
+}
+
+/* 日期標籤區塊 (靠右對齊) */
+#dateLabel {
+  justify-content: flex-end; /* ✅ 日期靠右 */
+  text-align: right;
+}
+
+/* 日期樣式 */
+.dateLabel {
+  /* 字體 */
+  color: #8b8b8b;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* 時間區塊 */
+.timeBox {
+  display: flex;
   align-items: center;
-  margin: 10px 0;
+  justify-content: flex-start;
+  gap: 10px;
 }
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 10px;
+
+/* 直書標籤 (例如：現在時間) */
+.timeBox .timeLabel {
+  /* 視覺樣式 */
+  background: #666666;
+  color: #ffffff;
+  border-radius: 12px;
+  /* 字體 */
+  font-weight: 700;
+  font-size: 0.92rem;
+  /* 寫法 */
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  display: inline-block;
+  padding: 6px 6px;
 }
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
+
+/* 大時間字 */
+.timeBox .timeValue {
+  /* 視覺樣式 */
+  color: #4a4a4a; /* 調整為深灰，提高對米白背景的對比度 */
+  background: rgba(0, 0, 0, 0.12); /* 柔和黑透明背景 */
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  /* 字體 */
+  font-size: 3rem;
+  font-weight: 900;
+  padding: 8px 12px;
+}
+
+/* 右側按鈕容器 */
+#topRight {
+  /* 佈局 */
+  display: flex;
+  justify-content: flex-end; /* 靠右上 */
+  align-items: flex-start;
+  /* 尺寸 */
+  flex: 0 0 auto;
+}
+
+/* 語系切換按鈕 */
+.langBtn {
+  /* 視覺樣式 */
+  background: #507ea4; /* 調整為低飽和度灰藍，更符合主題 */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  /* 字體 */
+  font-weight: 400;
+  white-space: nowrap;
+  padding: 8px 12px;
+}
+
+.langText {
+  font-size: 1rem;
+  padding-bottom: 10px;
+}
+
+
+/* ====================================================================
+    中段：主容器與任務群組樣式
+==================================================================== */
+
+/* ---------- 最外框 (主卡片) ---------- */
+.mainCard {
+  /* 佈局 */
+  display: flex;
+  flex-direction: column;
+  /* 視覺樣式 */
+  background: linear-gradient(180deg, #fffdf7, #FFF3E0); /* 微黃漸變 */
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+  /* 間距 */
+  padding: 14px;
+  gap: 10px;
+}
+
+/* 任務容器 (儀式 + 水月 + 白青) */
+.taskContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 6px; /* 略微內縮，增加視覺空間 */
+}
+
+/* 任務群組：(當前/接下來/剩餘) */
+.group {
+  /* 佈局 */
+  display: flex;
+  flex-direction: column;
+  /* 視覺樣式 */
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  /* 字體 */
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  color: #333;
+  /* 間距 */
+  padding: 10px;
+  gap: 8px;
+}
+
+/* ---------- 任務列 (taskRow 共通設定 - 減少重複) ---------- */
+.taskRow {
+  /* 佈局 */
+  display: grid;
+  grid-template-columns: 115px 100px 1fr; /* 類型｜時間｜內容 */
+  align-items: center;
+  min-height: 48px; /* 保持一致高度 */
+  /* 間距 */
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* ---------- 當前任務 (.current) 共通設定 ---------- */
+.taskRow.current {
+  /* 共通字體 */
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #3a3a3a;
+  /* 覆蓋 taskRow 的 padding */
+  padding: 10px;
+}
+
+/* 當前 儀式：灰紫調 (藤鼠) */
+.taskRow.gishiki.current {
+  background: linear-gradient(
+    90deg,
+    rgba(182, 172, 198, 0.35), /* 藤鼠 */
+    rgba(235, 230, 240, 0.25)
+  );
+  border-left: 6px solid #7058A3; /* 藤紫鼠 */
+  font-size: 1.4rem; /* 略小 */
+}
+
+/* 當前 水月：灰藍調 (藍白橡) */
+.taskRow.mizuki.current {
+  background: linear-gradient(
+    90deg,
+    rgba(167, 187, 198, 0.35), /* 藍白橡 */
+    rgba(230, 240, 245, 0.25)
+  );
+  border-left: 6px solid #507EA4; /* 錫色偏灰藍 */
+}
+
+/* 當前 白青：灰綠調 (青鈍) */
+.taskRow.shirao.current {
+  background: linear-gradient(
+    90deg,
+    rgba(164, 180, 164, 0.35), /* 青鈍 */
+    rgba(230, 238, 230, 0.25)
+  );
+  border-left: 6px solid #65A48D; /* 青磁鼠 */
+}
+
+/* 當前任務 時間 (col-time) */
+.taskRow.current .col-time {
+  color: #3a3a3a;
+  font-size: 1.4rem;
+  font-weight: 700;
   text-align: center;
 }
-th {
-  background-color: #f0f0f0;
+
+/* 當前任務 詳細 (col-content) */
+.taskRow.current .col-content {
+  color: #3a3a3a;
 }
-button {
-  padding: 6px 12px;
+
+
+/* ====================================================================
+    ② 接下來兩小時 + 剩餘任務 (次要任務)
+==================================================================== */
+.taskWrapper {
+  /* 視覺樣式 */
+  background: linear-gradient(
+    90deg,
+    rgba(230, 230, 230, 0.4),
+    rgba(250, 250, 250, 0.2)
+  ); /* 柔和灰調漸層 */
+  border-left: 6px solid #b5b2aa; /* 淺灰茶色：銀鼠(ぎんねず) */
+  border-radius: 8px;
+  /* 字體 */
+  font-weight: 600;
+  color: #3a3a3a;
+  /* 間距 */
+  padding: 8px 10px;
+}
+
+/* 共通的 taskRow 版面設定 (次要任務用) */
+.taskWrapper .taskRow,
+.remainingContainer .taskRow {
+  /* 佈局 */
+  display: grid;
+  grid-template-columns: 107px 100px 1fr; /* 略微調整欄寬 */
+  align-items: center;
+  text-align: center;
+  /* 間距 */
+  padding: 6px 8px;
+}
+
+/* placeholder (保持欄寬) */
+.placeholder {
+  width: 107px;
+}
+
+/* col-time 文字稍大（第二大） */
+.taskWrapper .col-time,
+.remainingContainer .col-time {
+  font-size: 1.4rem;
+  color: #4a4a4a;
+}
+
+/* col-content 左對齊以便長文閱讀 (次要任務) */
+.taskWrapper .col-content,
+.remainingContainer .col-content {
+  text-align: center;
+}
+
+/* 狀態顏色 */
+.gray,
+.row-gray {
+  color: #8b8b8b;
+}
+
+/* ---------- 可收合區塊 (剩餘任務) ---------- */
+.remainingContainer {
+  /* 視覺效果 */
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.45s ease, opacity 0.25s ease;
+}
+
+.remainingContainer.open {
+  max-height: 600px; /* 預設最大高度 */
+  opacity: 1;
+}
+
+/* ---------- 群組底部區（按鈕） ---------- */
+.groupFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 5px;
+}
+
+/* 顯示／收起按鈕 (茶鼠灰調) */
+.showBtn {
+  /* 視覺樣式 */
+  background: rgba(146, 138, 133, 0.12); /* 茶鼠灰 */
   border: none;
-  background-color: #0078d7;
-  color: white;
-  border-radius: 4px;
+  color: #4a3d33;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease;
+  /* 字體與間距 */
+  font-weight: 700;
+  padding: 6px 14px;
 }
-button:hover {
-  background-color: #005fa3;
+
+.showBtn:hover {
+  background: rgba(146, 138, 133, 0.25);
+}
+
+
+/* ====================================================================
+    回報區塊 (功能存在但隱藏文字)
+==================================================================== */
+.reportSection {
+  margin-top: 5px;
+}
+
+.reportForm input,
+.reportForm select,
+.reportForm button {
+  /* 視覺樣式 */
+  background: rgba(0, 0, 0, 0.05);
+  color: #555;
+  border: none;
+  border-radius: 10px;
+  /* 間距 */
+  padding: 10px;
+  margin-right: 1px;
+}
+
+/* 警告文字與送信按鈕容器 */
+.reportContainer {
+  display: flex;
+  justify-content: flex-end; /* 整個區塊靠右 */
+  align-items: center;
+  gap: 10px;
+}
+
+#reportMessage {
+  color: green;
+}
+
+.reportButtons button {
+  padding: 5px 10px;
+}
+
+/* 報告列表樣式 */
+.reportLog {
+  margin: 0;
+  padding: 0;
+}
+
+.reportList {
+  overflow-y: auto;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+/* 右對齊按鈕容器 */
+#reportDel {
+  text-align: right;
+}
+
+/* clearReports 按鈕樣式 (隱藏式設計) */
+#clearReports {
+  /* 視覺樣式 */
+  background-color: transparent; /* 文字按鈕 */
+  color: #f3efea; /* 與背景色相同，達到隱藏效果 */
+  border: 1px solid #f3efea;
+  border-radius: 4px;
+  transition: all 0.2s;
+  /* 間距 */
+  padding: 4px 10px;
+}
+
+/* ====================================================================
+    📱 手機響應式 (RWD) - 集中管理
+    → max-width: 600px 斷點
+==================================================================== */
+@media (max-width: 600px) {
+
+  /* App 主容器調整 */
+  #app {
+    padding: 10px;
+  }
+
+  /* --- 上方區塊調整 --- */
+
+  #topBar {
+    padding: 0 8px;
+    gap: 8px;
+  }
+
+  /* 左側區塊：寬度縮小 */
+  #topLeft {
+    width: 190px; /* ✅ 手機時改成 190px */
+  }
+
+  /* 日期：字體縮小 */
+  .dateLabel {
+    font-size: 1.2rem;
+  }
+
+  /* 時間字：調整大小 */
+  .timeBox .timeValue {
+    font-size: 2rem; /* ✅ 手機時縮小 */
+    padding: 6px 10px;
+  }
+
+  .timeBox .timeLabel {
+    font-size: 0.85rem;
+  }
+
+  #topRight {
+    align-self: flex-start;
+  }
+
+  /* --- 中段任務區塊調整 --- */
+
+  /* 主容器縮小內距 */
+  .mainCard {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  /* 群組內距縮小 */
+  .group {
+    padding: 8px;
+  }
+
+  /* 任務列維持橫排，但縮小欄寬與間距 */
+  .taskRow {
+    grid-template-columns: 95px 70px 1fr; /* 統一 RWD 欄寬 */
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  /* 當前任務的 taskRow 調整 */
+  .taskRow.current {
+    grid-template-columns: 95px 70px 1fr;
+    padding: 8px;
+  }
+
+  /* 次要任務的 taskRow 調整 */
+  .taskWrapper .taskRow,
+  .remainingContainer .taskRow {
+    grid-template-columns: 85px 70px 1fr;
+  }
+
+  /* 各欄位字體微縮 */
+  .col-type {
+    font-size: 1.1rem;
+  }
+
+  .col-time {
+    font-size: 1rem;
+  }
+
+  .col-content {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  /* 群組之間略留距離 */
+  .group + .group {
+    /* margin-top: 6px; */
+  }
+
+  /* 按鈕調整為易點擊尺寸 */
+  .showBtn {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  /* 收合內容最大高度調整 */
+  .remainingContainer.open {
+    max-height: 400px;
+  }
+
 }
